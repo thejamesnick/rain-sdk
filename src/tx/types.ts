@@ -24,6 +24,14 @@ export interface EnterLimitOptionTxParams {
     tokenDecimals?: number;
 }
 
+export interface LimitSellOptionTxParams {
+    marketContractAddress: `0x${string}`;           // TradeMarket contract
+    selectedOption: number;
+    pricePerShare: bigint;     // price per share (0 to 1 float)
+    sharesAmountWei: bigint;   // number of shares to sell (votes in contract)
+    tokenDecimals?: number;
+}
+
 export interface CreateMarketTxParams {
     marketQuestion: string;
     marketOptions: string[];
@@ -48,6 +56,66 @@ export interface CreateMarketTxParams {
 export interface ClaimTxParams {
     marketId: string;
     walletAddress: `0x${string}`;
+    apiUrl?: string;
+    rpcUrl?: string;
+}
+
+export interface CreateDisputeTxParams {
+    marketId: string;
+    walletAddress: `0x${string}`;
+    usdtTokenAddress?: `0x${string}`;
+    rainTokenAddress?: `0x${string}`;
+    usdtSymbol?: string;
+    apiUrl?: string;
+    rpcUrl?: string;
+}
+
+export interface CreateAppealTxParams {
+    marketId: string;
+    walletAddress: `0x${string}`;
+    usdtTokenAddress?: `0x${string}`;
+    rainTokenAddress?: `0x${string}`;
+    usdtSymbol?: string;
+    apiUrl?: string;
+    rpcUrl?: string;
+}
+
+export interface CloseMarketTxParams {
+    marketId: string;
+    walletAddress: `0x${string}`;        // smart account address for allowance checks
+    proposedOutcome?: number;            // winner choice index; required for V2 and V3 manual resolver
+    usdtTokenAddress?: `0x${string}`;   // required for V3: stablecoin token address
+    rainTokenAddress?: `0x${string}`;   // required for V3: RAIN token address
+    usdtSymbol?: string;                 // USDT symbol for the current environment (e.g. "USDTm" or "USD₮0")
+    tokenDecimals?: number;             // defaults to 6
+    apiUrl?: string;
+    rpcUrl?: string;
+}
+
+export interface OrderToCancel {
+    orderType: 'buy' | 'sell';
+    option: bigint;       // option index (e.g. 0n for Yes, 1n for No)
+    pricePerShare: bigint; // price in 18-decimal wei (same scale as limit order prices)
+    orderId: bigint;      // externalID from the open order
+}
+
+export interface CancelOrdersTxParams {
+    marketContractAddress: `0x${string}`;
+    orders: OrderToCancel[];
+}
+
+export interface CancelAllOpenOrdersTxParams {
+    marketId: string;                        // MongoDB _id — from getMarketById() or getPublicMarkets()
+    marketContractAddress: `0x${string}`;   // contract address — for building the cancel tx
+    walletAddress: `0x${string}`;
+    accessToken: string;                     // Bearer token from Rain auth
+    apiUrl?: string;
+}
+
+export interface ExtendTimeTxParams {
+    marketContractAddress: `0x${string}`;  // TradeMarket contract — resolver() is called on it to get the oracle address
+    walletAddress: `0x${string}`;          // smart account address
+    accessToken: string;                    // Bearer token from Rain auth
     apiUrl?: string;
     rpcUrl?: string;
 }

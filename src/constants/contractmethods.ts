@@ -1,5 +1,13 @@
 export const ENTER_OPTION = 'enterOption'
 export const PLACE_BUY_ORDER = 'placeBuyOrder'
+export const PLACE_SELL_ORDER = 'placeSellOrder'
 export const APPROVE_TOKEN = 'approve'
 export const CREATE_MARKET = 'createPool'
 export const CLAIM = "claim"
+export const CLOSE_POOL = 'closePool'
+export const CHOOSE_WINNER = 'chooseWinner'
+export const GET_RESOLVER_BOND_AMOUNT = 'getResolverBondAmount'
+export const OPEN_DISPUTE = 'openDispute'
+export const GET_DISPUTE_APPEAL_FEE = 'getDisputeAppealFee'
+export const CANCEL_BUY_ORDERS = 'cancelBuyOrders'
+export const CANCEL_SELL_ORDERS = 'cancelSellOrders'

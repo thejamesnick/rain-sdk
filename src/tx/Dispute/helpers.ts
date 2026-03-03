@@ -1,0 +1,13 @@
+import { Contract, JsonRpcProvider } from "ethers";
+import { TradePoolAbi } from "../../abi/TradeMarketsAbi.js";
+import { GET_DISPUTE_APPEAL_FEE } from "../../constants/contractmethods.js";
+
+export async function getDisputeAppealFee(
+    contractAddress: `0x${string}`,
+    rpcUrl: string
+): Promise<bigint> {
+    const provider = new JsonRpcProvider(rpcUrl);
+    const contract = new Contract(contractAddress, TradePoolAbi, provider);
+    const fee = await contract[GET_DISPUTE_APPEAL_FEE]();
+    return BigInt(fee);
+}

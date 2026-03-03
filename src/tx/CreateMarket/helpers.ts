@@ -47,9 +47,9 @@ export async function uploadMetaData(
         isAiResolver: isPublicPoolResolverAi,
         contractData: {
             pool_owner: creator,
-            start_time: startTime,
-            end_time: endTime,
-            no_of_options: no_of_options,
+            start_time: startTime.toString(),
+            end_time: endTime.toString(),
+            no_of_options: no_of_options.toString(),
         },
     };
     const res = await fetch(`${apiUrl}/ipfs/upload`, {
