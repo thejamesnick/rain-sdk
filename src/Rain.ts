@@ -2,7 +2,7 @@ import { GetMarketByIdParams, GetMarketsParams, GetUserInvestmentsParams, Market
 import { getMarkets } from './markets/getMarkets.js';
 import { getMarketById } from './markets/getMarketById.js';
 import { getUserInvestments } from './markets/getUserInvestments.js';
-import { ApproveTxParams, CancelAllOpenOrdersTxParams, CancelOrdersTxParams, ClaimTxParams, CloseMarketTxParams, CreateDisputeTxParams, CreateAppealTxParams, CreateMarketTxParams, EnterLimitOptionTxParams, EnterOptionTxParams, ExtendTimeTxParams, LimitSellOptionTxParams, RawTransaction } from './tx/types.js';
+import { AddLiquidityTxParams, ApproveTxParams, CancelAllOpenOrdersTxParams, CancelOrdersTxParams, ClaimTxParams, CloseMarketTxParams, CreateDisputeTxParams, CreateAppealTxParams, CreateMarketTxParams, EnterLimitOptionTxParams, EnterOptionTxParams, ExtendTimeTxParams, LimitSellOptionTxParams, RawTransaction } from './tx/types.js';
 import { buildEnterOptionRawTx, buildLimitBuyOrderRawTx, buildLimitSellOrderRawTx } from './tx/buildRawTransactions.js';
 import { buildCancelOrdersRawTx } from './tx/buildCancelOrdersRawTx.js';
 import { buildCancelAllOpenOrdersRawTx } from './tx/buildCancelAllOpenOrdersRawTx.js';
@@ -14,6 +14,7 @@ import { RainCoreConfig, RainEnvironment } from './types.js';
 import { ALLOWED_ENVIRONMENTS, ENV_CONFIG, getRandomRpc } from './config/environments.js';
 import { buildClaimRawTx } from './tx/ClaimFunds/buildClaimFundsRawTx.js';
 import { buildExtendTimeRawTx } from './tx/ExtendTime/buildExtendTimeRawTx.js';
+import { buildAddLiquidityRawTx } from './tx/AddLiquidity/buildAddLiquidityRawTx.js';
 import { loginUser } from './auth/login.js';
 import { LoginParams, LoginResult } from './auth/types.js';
 
@@ -109,6 +110,14 @@ export class Rain {
 
   async buildExtendTimeTx(params: ExtendTimeTxParams): Promise<RawTransaction> {
     return buildExtendTimeRawTx({ ...params, apiUrl: this.apiUrl, rpcUrl: this.rpcUrl });
+  }
+
+  async buildAddLiquidityTx(params: AddLiquidityTxParams): Promise<RawTransaction[]> {
+    return buildAddLiquidityRawTx({
+      ...params,
+      environment: this.environment,
+      rpcUrl: params.rpcUrl ?? this.rpcUrl!,
+    });
   }
 
   async login(params: LoginParams): Promise<LoginResult> {

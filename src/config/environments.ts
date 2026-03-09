@@ -19,6 +19,8 @@ export const ENV_CONFIG = {
         market_factory_address: "0x148DA7F2039B2B00633AC2ab566f59C8a4C86313",
         dispute_initial_timer: 1 * 60,
         usdt_symbol: USDT_SYMBOL_DEV,
+        usdt_token: "0xCa4f77A38d8552Dd1D5E44e890173921B67725F4" as `0x${string}`,
+        rain_token: "0x25118290e6A5f4139381D072181157035864099d" as `0x${string}`,
     },
 
     stage: {
@@ -26,6 +28,8 @@ export const ENV_CONFIG = {
         market_factory_address: "0x6109c9f28FE3Ad84c51368f7Ef2d487ca020c561",
         dispute_initial_timer: 1 * 60,
         usdt_symbol: USDT_SYMBOL_PROD,
+        usdt_token: "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9" as `0x${string}`,
+        rain_token: "0x43976a124e6834b541840Ce741243dAD3dd538DA" as `0x${string}`,
     },
 
     production: {
@@ -33,5 +37,7 @@ export const ENV_CONFIG = {
         market_factory_address: "0xccCB3C03D9355B01883779EF15C1Be09cf3623F1",
         dispute_initial_timer: 120 * 60,
         usdt_symbol: USDT_SYMBOL_PROD,
+        usdt_token: "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9" as `0x${string}`,
+        rain_token: "0x43976a124e6834b541840Ce741243dAD3dd538DA" as `0x${string}`,
     },
 } as const;

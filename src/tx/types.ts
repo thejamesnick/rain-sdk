@@ -112,6 +112,13 @@ export interface CancelAllOpenOrdersTxParams {
     apiUrl?: string;
 }
 
+export interface AddLiquidityTxParams {
+    marketContractAddress: `0x${string}`;
+    walletAddress: `0x${string}`;
+    amount: string | number;  // human-readable (e.g. 100). Decimals auto-detected: 6 for USDT, 18 for RAIN.
+    rpcUrl?: string;
+}
+
 export interface ExtendTimeTxParams {
     marketContractAddress: `0x${string}`;  // TradeMarket contract — resolver() is called on it to get the oracle address
     walletAddress: `0x${string}`;          // smart account address
