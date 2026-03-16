@@ -349,10 +349,95 @@ export const TradePoolAbi = [
     },
     {
         "type": "function",
+        "name": "openDispute",
+        "inputs": [],
+        "outputs": [],
+        "stateMutability": "nonpayable"
+    },
+    {
+        "type": "function",
+        "name": "getDisputeAppealFee",
+        "inputs": [],
+        "outputs": [
+            {
+                "name": "disputeFee",
+                "type": "uint256",
+                "internalType": "uint256"
+            }
+        ],
+        "stateMutability": "view"
+    },
+    {
+        "type": "function",
+        "name": "DISPUTE_FEE_MIN",
+        "inputs": [],
+        "outputs": [
+            {
+                "name": "",
+                "type": "uint256",
+                "internalType": "uint256"
+            }
+        ],
+        "stateMutability": "view"
+    },
+    {
+        "type": "function",
+        "name": "DISPUTE_FEE_MAX",
+        "inputs": [],
+        "outputs": [
+            {
+                "name": "",
+                "type": "uint256",
+                "internalType": "uint256"
+            }
+        ],
+        "stateMutability": "view"
+    },
+    {
+        "type": "function",
+        "name": "APPEAL_FEE_MIN",
+        "inputs": [],
+        "outputs": [
+            {
+                "name": "",
+                "type": "uint256",
+                "internalType": "uint256"
+            }
+        ],
+        "stateMutability": "view"
+    },
+    {
+        "type": "function",
         "name": "closePool",
         "inputs": [],
         "outputs": [],
         "stateMutability": "nonpayable"
+    },
+    {
+        "type": "function",
+        "name": "closePool",
+        "inputs": [
+            {
+                "name": "proposedWinner",
+                "type": "uint256",
+                "internalType": "uint256"
+            }
+        ],
+        "outputs": [],
+        "stateMutability": "nonpayable"
+    },
+    {
+        "type": "function",
+        "name": "getResolverBondAmount",
+        "inputs": [],
+        "outputs": [
+            {
+                "name": "resolverBondAmount",
+                "type": "uint256",
+                "internalType": "uint256"
+            }
+        ],
+        "stateMutability": "view"
     },
     {
         "type": "function",
@@ -766,13 +851,6 @@ export const TradePoolAbi = [
             }
         ],
         "stateMutability": "view"
-    },
-    {
-        "type": "function",
-        "name": "openDispute",
-        "inputs": [],
-        "outputs": [],
-        "stateMutability": "nonpayable"
     },
     {
         "type": "function",

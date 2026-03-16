@@ -1,0 +1,45 @@
+import { ethers } from "ethers";
+import { CancelAllOpenOrdersTxParams, RawTransaction } from "./types.js";
+import { buildCancelOrdersRawTx } from "./buildCancelOrdersRawTx.js";
+
+const PRICE_DECIMALS = 18;
+
+async function fetchOpenOrders(marketId: string, walletAddress: string, accessToken: string, apiUrl: string): Promise<any[]> {
+    const res = await fetch(
+        `${apiUrl}/orders/get-user-order-by-poolId/${marketId}?filter=open`,
+        { headers: { Authorization: `Bearer ${accessToken}` } }
+    );
+    if (!res.ok) throw new Error(`Failed to fetch open orders: ${res.status}`);
+    const data = await res.json();
+    return data?.data ?? data ?? [];
+}
+
+export async function buildCancelAllOpenOrdersRawTx(
+    params: CancelAllOpenOrdersTxParams
+): Promise<RawTransaction[]> {
+    const { marketId, marketContractAddress, walletAddress, accessToken, apiUrl } = params;
+
+    if (!apiUrl) throw new Error("Environment is not set properly, api url is missing");
+    if (!marketId) throw new Error("marketId is required");
+    if (!marketContractAddress) throw new Error("marketContractAddress is required");
+    if (!walletAddress) throw new Error("walletAddress is required");
+    if (!accessToken) throw new Error("accessToken is required");
+
+    const orders = await fetchOpenOrders(marketId, walletAddress, accessToken, apiUrl);
+
+    // Filter to only this wallet's orders in case the API returns all
+    const userOrders = orders.filter(
+        (o: any) => !o.user || o.user?.toLowerCase() === walletAddress.toLowerCase()
+    );
+
+    if (userOrders.length === 0) return [];
+
+    const mapped = userOrders.map((o: any) => ({
+        orderType:     o.orderType as 'buy' | 'sell',
+        option:        BigInt(o.orderOption),
+        pricePerShare: ethers.parseUnits(String(o.pricePerShare), PRICE_DECIMALS),
+        orderId:       BigInt(o.externalID),
+    }));
+
+    return buildCancelOrdersRawTx({ marketContractAddress, orders: mapped });
+}

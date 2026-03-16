@@ -131,3 +131,27 @@ export interface GetProtocolStatsParams {
   subgraphUrl?: string;
   subgraphApiKey?: string;
 }
+
+export interface GetMarketByIdParams {
+    marketId: string;
+    apiUrl?: string;
+}
+
+export interface GetUserInvestmentsParams {
+    walletAddress: string;
+    accessToken: string;
+    limit?: number;
+    offset?: number;
+    status?: MarketStatus;
+    apiUrl?: string;
+}
+
+export interface UserInvestment {
+    _id: string;
+    poolId: string;
+    walletAddress: string;
+    investment: any[];
+    totalInvestment: string;
+    pool: Record<string, any>;
+    [key: string]: any;
+}

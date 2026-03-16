@@ -1,6 +1,8 @@
 import { PublicClient, WebSocketTransport } from 'viem';
-import { GetMarketsParams, Market, MarketDetails, MarketLiquidity, MarketVolume, OptionPrice, ProtocolStats } from './markets/types.js';
+import { GetMarketsParams, Market, GetMarketByIdParams, GetUserInvestmentsParams, UserInvestment, MarketDetails, MarketLiquidity, MarketVolume, OptionPrice, ProtocolStats } from './markets/types.js';
 import { getMarkets } from './markets/getMarkets.js';
+import { getMarketById } from './markets/getMarketById.js';
+import { getUserInvestments } from './markets/getUserInvestments.js';
 import { getMarketDetails } from './markets/getMarketDetails.js';
 import { getMarketPrices } from './markets/getMarketPrices.js';
 import { getMarketVolume } from './markets/getMarketVolume.js';
@@ -8,8 +10,11 @@ import { getMarketLiquidity } from './markets/getMarketLiquidity.js';
 import { getMarketAddress } from './markets/getMarketAddress.js';
 import { getMarketId } from './markets/getMarketId.js';
 import { getProtocolStats } from './markets/getProtocolStats.js';
-import { AddLiquidityTxParams, ApproveTxParams, CancelOrdersTxParams, ClaimTxParams, CloseMarketTxParams, ChooseWinnerTxParams, ResolveMarketTxParams, CreateMarketTxParams, DepositToSmartAccountTxParams, EnterLimitOptionTxParams, EnterOptionTxParams, RawTransaction, SellOptionTxParams, WithdrawFromSmartAccountTxParams } from './tx/types.js';
+import { AddLiquidityTxParams, ApproveTxParams, CancelOrdersTxParams, CancelAllOpenOrdersTxParams, ClaimTxParams, CloseMarketTxParams, ChooseWinnerTxParams, ResolveMarketTxParams, CreateMarketTxParams, CreateDisputeTxParams, CreateAppealTxParams, DepositToSmartAccountTxParams, EnterLimitOptionTxParams, EnterOptionTxParams, ExtendTimeTxParams, RawTransaction, SellOptionTxParams, WithdrawFromSmartAccountTxParams } from './tx/types.js';
 import { buildAddLiquidityRawTx, buildEnterOptionRawTx, buildLimitBuyOrderRawTx, buildSellOptionRawTx, buildCancelBuyOrdersRawTx, buildCancelSellOrdersRawTx } from './tx/buildRawTransactions.js';
+import { buildCancelAllOpenOrdersRawTx } from './tx/buildCancelAllOpenOrdersRawTx.js';
+import { buildCreateDisputeRawTx, buildCreateAppealRawTx } from './tx/Dispute/buildDisputeRawTx.js';
+import { buildExtendTimeRawTx } from './tx/ExtendTime/buildExtendTimeRawTx.js';
 import { buildApproveRawTx } from './tx/buildApprovalRawTx.js';
 import { buildCreateMarketRawTx } from './tx/CreateMarket/buildCreateMarketRawTx.js';
 import { RainCoreConfig, RainEnvironment } from './types.js';
@@ -38,6 +43,8 @@ import { GetPnLParams, PnLResult } from './pnl/types.js';
 import { getPnL } from './pnl/getPnL.js';
 import { GetLeaderboardParams, LeaderboardResult } from './leaderboard/types.js';
 import { getLeaderboard } from './leaderboard/getLeaderboard.js';
+import { loginUser } from './auth/login.js';
+import { LoginParams, LoginResult } from './auth/types.js';
 
 export class Rain {
 
@@ -51,6 +58,7 @@ export class Rain {
   private readonly wsRpcUrl?: string;
   private readonly wsReconnect?: boolean | { attempts?: number; delay?: number };
   private wsClient: PublicClient<WebSocketTransport> | null = null;
+  private readonly usdtSymbol: string;
 
   constructor(config: RainCoreConfig = {}) {
     const { environment = "development", rpcUrl, apiUrl, subgraphUrl, subgraphApiKey, wsRpcUrl, wsReconnect } = config;
@@ -74,10 +82,19 @@ export class Rain {
     this.subgraphApiKey = subgraphApiKey;
     this.wsRpcUrl = wsRpcUrl;
     this.wsReconnect = wsReconnect;
+    this.usdtSymbol = envConfig.usdt_symbol;
   }
 
   async getPublicMarkets(params: GetMarketsParams): Promise<Market[]> {
     return getMarkets({ ...params, apiUrl: this.apiUrl });
+  }
+
+  async getMarketById(params: GetMarketByIdParams): Promise<Market> {
+    return getMarketById({ ...params, apiUrl: this.apiUrl });
+  }
+
+  async getUserInvestments(params: GetUserInvestmentsParams): Promise<UserInvestment[]> {
+    return getUserInvestments({ ...params, apiUrl: this.apiUrl });
   }
 
   buildApprovalTx(params: ApproveTxParams): RawTransaction | Error {
@@ -106,6 +123,10 @@ export class Rain {
     return buildCancelSellOrdersRawTx(params);
   }
 
+  async buildCancelAllOpenOrdersTx(params: CancelAllOpenOrdersTxParams): Promise<RawTransaction[]> {
+    return buildCancelAllOpenOrdersRawTx({ ...params, apiUrl: this.apiUrl });
+  }
+
   buildAddLiquidityTx(params: AddLiquidityTxParams): RawTransaction {
     return buildAddLiquidityRawTx(params);
   }
@@ -128,6 +149,18 @@ export class Rain {
 
   async buildResolveMarketTx(params: ResolveMarketTxParams): Promise<RawTransaction[]> {
     return buildResolveMarketRawTx({ ...params, apiUrl: this.apiUrl, rpcUrl: this.rpcUrl });
+  }
+
+  async buildCreateDisputeTx(params: CreateDisputeTxParams): Promise<RawTransaction[]> {
+    return buildCreateDisputeRawTx({ ...params, apiUrl: this.apiUrl, rpcUrl: this.rpcUrl, usdtSymbol: this.usdtSymbol });
+  }
+
+  async buildCreateAppealTx(params: CreateAppealTxParams): Promise<RawTransaction[]> {
+    return buildCreateAppealRawTx({ ...params, apiUrl: this.apiUrl, rpcUrl: this.rpcUrl, usdtSymbol: this.usdtSymbol });
+  }
+
+  async buildExtendTimeTx(params: ExtendTimeTxParams): Promise<RawTransaction> {
+    return buildExtendTimeRawTx({ ...params, apiUrl: this.apiUrl, rpcUrl: this.rpcUrl });
   }
 
   buildDepositToSmartAccountTx(params: DepositToSmartAccountTxParams): RawTransaction {
@@ -334,6 +367,10 @@ export class Rain {
       }
       this.wsClient = null;
     }
+  }
+
+  async login(params: LoginParams): Promise<LoginResult> {
+    return loginUser({ ...params, apiUrl: this.apiUrl });
   }
 
 }

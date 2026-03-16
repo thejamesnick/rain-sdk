@@ -24,6 +24,14 @@ export interface EnterLimitOptionTxParams {
     tokenDecimals?: number;
 }
 
+export interface LimitSellOptionTxParams {
+    marketContractAddress: `0x${string}`;           // TradeMarket contract
+    selectedOption: number;
+    pricePerShare: bigint;     // price per share (0 to 1 float)
+    sharesAmountWei: bigint;   // number of shares to sell (votes in contract)
+    tokenDecimals?: number;
+}
+
 export interface CreateMarketTxParams {
     marketQuestion: string;
     marketOptions: string[];
@@ -72,6 +80,26 @@ export interface SellOptionTxParams {
     tokenDecimals?: number;      // defaults to 6 (USDT)
 }
 
+export interface CreateDisputeTxParams {
+    marketId: string;
+    walletAddress: `0x${string}`;
+    usdtTokenAddress?: `0x${string}`;
+    rainTokenAddress?: `0x${string}`;
+    usdtSymbol?: string;
+    apiUrl?: string;
+    rpcUrl?: string;
+}
+
+export interface CreateAppealTxParams {
+    marketId: string;
+    walletAddress: `0x${string}`;
+    usdtTokenAddress?: `0x${string}`;
+    rainTokenAddress?: `0x${string}`;
+    usdtSymbol?: string;
+    apiUrl?: string;
+    rpcUrl?: string;
+}
+
 export interface CancelOrdersTxParams {
     marketContractAddress: `0x${string}`;
     orders: {
@@ -79,6 +107,22 @@ export interface CancelOrdersTxParams {
         price: number;      // 0 < price < 1 (decimal, converted to 1e18 internally)
         orderID: bigint;
     }[];
+}
+
+export interface CancelAllOpenOrdersTxParams {
+    marketId: string;                        // MongoDB _id — from getMarketById() or getPublicMarkets()
+    marketContractAddress: `0x${string}`;   // contract address — for building the cancel tx
+    walletAddress: `0x${string}`;
+    accessToken: string;                     // Bearer token from Rain auth
+    apiUrl?: string;
+}
+
+export interface ExtendTimeTxParams {
+    marketContractAddress: `0x${string}`;  // TradeMarket contract — resolver() is called on it to get the oracle address
+    walletAddress: `0x${string}`;          // smart account address
+    accessToken: string;                    // Bearer token from Rain auth
+    apiUrl?: string;
+    rpcUrl?: string;
 }
 
 export interface GetUserOptionSharesParams {
